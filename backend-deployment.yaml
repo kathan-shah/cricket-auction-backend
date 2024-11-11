@@ -1,0 +1,35 @@
+# backend-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cricket-backend-deployment
+  namespace: cricket-auction
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cricket-backend
+  template:
+    metadata:
+      labels:
+        app: cricket-backend
+    spec:
+      containers:
+      - name: cricket-backend
+        image: cricketauctionacr.azurecr.io/cricket-auction-backend:v1
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cricket-backend-service
+  namespace: cricket-auction
+spec:
+  selector:
+    app: cricket-backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
