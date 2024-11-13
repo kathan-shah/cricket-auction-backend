@@ -4,6 +4,7 @@ const cors = require('cors');
 const { connectToDatabase } = require('./config/dbConfig');
 const leagueRoutes = require('./routes/leagueRoutes');
 const teamRoutes = require('./routes/teamRoutes');
+const matchdayRoutes = require('./routes/matchdayRoutes');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -23,6 +24,7 @@ app.get('/api/test', (req, res) => {
 // Routes
 app.use('/api', leagueRoutes);
 app.use('/api', teamRoutes);
+app.use('/api', matchdayRoutes);
 
 // Start server
 app.listen(PORT, () => {
