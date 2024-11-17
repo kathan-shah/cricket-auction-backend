@@ -1,26 +1,13 @@
-const sql = require('mssql');
+// src/config/dbConfig.js
 require('dotenv').config();
-const dbConfig = {
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  server: process.env.DB_SERVER, 
-  database: process.env.DB_NAME,
-  options: {
-    encrypt: true,
-    enableArithAbort: true,
-  }
-};
+const { Pool } = require('pg');
 
-const connectToDatabase = async () => {
-  try {
-    await sql.connect(dbConfig);
-    console.log('Connected to Azure SQL Database');
-  } catch (err) {
-    console.error('Database connection failed:', err);
-  }
-};
+const pool = new Pool({
+  user: process.env.DATABASE_USER,
+  host: process.env.DATABASE_HOST,
+  database: process.env.DATABASE_NAME,
+  password: process.env.DATABASE_PASSWORD,
+  port: parseInt(process.env.DATABASE_PORT, 10),
+});
 
-console.log('Database Server:', process.env.DB_SERVER);
-
-
-module.exports = { sql, connectToDatabase };
+module.exports = pool;

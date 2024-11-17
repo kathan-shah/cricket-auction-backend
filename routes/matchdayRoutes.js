@@ -4,6 +4,6 @@ const { getMatchdayInfo } = require('../controllers/matchdayController');
 const router = express.Router();
 
 // Route to get all head-to-head matches for the league
-router.get('/matchday/leagueId/:leagueId', getMatchdayInfo);
+router.get('/leagueId/:leagueId', getMatchdayInfo);
 
 module.exports = router;

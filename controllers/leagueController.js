@@ -1,27 +1,34 @@
-const { sql } = require('../config/dbConfig');
+// src/controllers/leagueController.js
+const pool = require('../config/dbConfig');
 
+// Create a new league
 const createLeague = async (req, res) => {
   const { leagueName, createdBy } = req.body;
   try {
-    const request = new sql.Request();
-    const result = await request
-      .input('leagueName', sql.NVarChar, leagueName)
-      .input('createdBy', sql.NVarChar, createdBy)
-      .query('INSERT INTO League (LeagueName, CreatedBy) VALUES (@leagueName, @createdBy); SELECT SCOPE_IDENTITY() AS LeagueID');
-    res.status(201).json({ message: 'League created successfully', leagueID: result.recordset[0].LeagueID });
+    const query = `
+      INSERT INTO League (league_name, created_by) 
+      VALUES ($1, $2) RETURNING league_id
+    `;
+    const values = [leagueName, createdBy];
+    const result = await pool.query(query, values);
+
+    res.status(201).json({ message: 'League created successfully', leagueID: result.rows[0].league_id });
   } catch (err) {
+    console.error('Error creating league:', err);
     res.status(500).json({ error: 'Failed to create league' });
   }
 };
 
+// Get all leagues
 const getLeagues = async (req, res) => {
-    try {
-      const request = new sql.Request();
-      const result = await request.query('SELECT * FROM League');
-      res.status(200).json(result.recordset);
-    } catch (err) {
-      res.status(500).json({ error: 'Failed to fetch leagues' });
-    }
-  };
+  try {
+    const query = 'SELECT * FROM League';
+    const result = await pool.query(query);
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error('Error fetching leagues:', err);
+    res.status(500).json({ error: 'Failed to fetch leagues' });
+  }
+};
 
 module.exports = { createLeague, getLeagues };
